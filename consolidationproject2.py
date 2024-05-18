@@ -4,7 +4,7 @@
 import random
 import matplotlib.pyplot as plt
 
-#define function t read word list from file 
+#define function to read word list from file 
 def read_word_list(filename):
     """Read a word list from a file
     Arg: 
@@ -19,16 +19,15 @@ def read_word_list(filename):
         #incase where file is not found
         print(f"Error: File '{filename}' not found.")
         return []
-# Word banks for different themes
-word_banks = {
-    "animals" : "animals.txt" , # filename for animal word list
-    "fruits"  : "fruits.txt" , # filename for fruit word list
-    "random"  : "random.txt" , # filename for random word list
-}
-
+        
 # define a function to choose random word from themes word bank
 def choose_word(theme):
-    """Choose a random word from the theme's word bank."""
+    """Choose a random word from the theme's word bank.
+    Args: theme (str): theme string 
+
+    Returns: 
+        str: random word
+    """
     #get the filename from the themes file wordlist
     filename = word_banks.get(theme, word_banks["random"])
     #reads the file and its word list 
@@ -45,7 +44,13 @@ def choose_word(theme):
 # define a function to show the word with
 # guessed letters
 def display_word(word, guessed_letters):
-    """Display the word with guessed letters."""
+    """Display the word with guessed letters.
+    Args: 
+        word (str): random word
+        guessed_letters (str): letters to be guseed
+Returns: 
+    str: display 
+    """
     display = ""
     for letter in word:
         if letter in guessed_letters:
@@ -71,7 +76,7 @@ def play_game(theme):
     print(f"Theme: {theme.capitalize()}\n")
 
     # game loop
-    while word_guesses < max_word_guesses:
+    while word_guesses < MAX_WORD_GUESSES:
         print("\nWord:", display_word(word, guessed_letters))
         # tells the user for a guess
         guess = input("Enter a letter or guess the whole word: ").lower()
@@ -121,6 +126,21 @@ def main():
     play_game(theme)
 
 if __name__ == "__main__":
+# Word banks for different themes
+word_banks = {
+    "animals" : "animals.txt" , # filename for animal word list
+    "fruits"  : "fruits.txt" , # filename for fruit word list
+    "random"  : "random.txt" , # filename for random word list
+}
+
+# tuple for storing theme filenames
+    theme_file = (
+        ("animals", "animals.txt"),
+        ("fruits", "fruits.txt"),
+        ("random", "random.txt")
+    )
+
+    
     main()
 
 

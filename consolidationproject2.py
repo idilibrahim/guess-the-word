@@ -1,77 +1,145 @@
-#  consolidation_project#2 
+# Game: Word Guessing 
 
-#word guessing game 
-
+#Import all modules
 import random
+import matplotlib.pyplot as plt
 
-def choose_word(): 
-    # random words in word bank
-    word_bank = ["dog", "cat", "fish", "hamster", "turtle"]
-    return random.choice(word_bank)
+#define function t read word list from file 
+def read_word_list(filename):
+    """Read a word list from a file
+    Arg: 
+        filename (str): the files name that contains the word list.
+    Return:
+        lists: a list of words read from the file """
+    try:
+        #try to open the file and read its contents, spliting each line into  list
+        with open(filename, 'r') as file:
+            return file.read().splitlines()
+    except FileNotFoundError:
+        #incase where file is not found
+        print(f"Error: File '{filename}' not found.")
+        return []
+# Word banks for different themes
+word_banks = {
+    "animals" : "animals.txt" , # filename for animal word list
+    "fruits"  : "fruits.txt" , # filename for fruit word list
+    "random"  : "random.txt" , # filename for random word list
+}
 
+# define a function to choose random word from themes word bank
+def choose_word(theme):
+    """Choose a random word from the theme's word bank."""
+    #get the filename from the themes file wordlist
+    filename = word_banks.get(theme, word_banks["random"])
+    #reads the file and its word list 
+    word_bank = read_word_list(filename)
+    if word_bank:
+        #if the word list is not empty, choose a random word
+        return random.choice(word_bank)
+    else:
+        # if the word list empty, print message 
+        # and choose from default llist
+        print("Using default word list.")
+        return random.choice(word_banks["random"])
+    
+# define a function to show the word with
+# guessed letters
 def display_word(word, guessed_letters):
-    #displays the word with the guessed letters
+    """Display the word with guessed letters."""
     display = ""
-    for letter in word: 
+    for letter in word:
         if letter in guessed_letters:
             display += letter + " "
-        else: 
+        else:
             display += "_ "
     return display.strip()
 
-def play_game(): 
-    word = choose_word()
-    guessed_letters = []
-    attempts = 0 
-    word_guesses = 0
-    
-    current_player = 1 
+# defines the maiin function of the game
+def play_game(theme):
+    """Play the word guessing game."""
+    # choose random word based on what theme was chose
+    word = choose_word(theme)
+    guessed_letters = [] # list to store gussed letters
+    attempts = 0 # counts number of attempts
+    word_guesses = 0 # counts number of word guesses
+    max_word_guesses = 3 # 3 is the maxium of word guesses
+    guess_history = []  # tracks history, so it could be plotted 
 
+   #prints welcome message and theme of game
     print("Welcome to the Word Guessing Game")
     print("Your job is to guess the secret word!")
-    print("Player 1, you'll start first, Good luck!")
-    
-    while word_guesses < 3: 
-        print("\nWord:", display_word(word, guessed_letters))
-        guess = input(f"Player {current_player}, enter a letter or guess the whole word: ").lower()
-    #switch player after each turn
-        current_player = 1 if current_player == 2 else 2
+    print(f"Theme: {theme.capitalize()}\n")
 
-        if len(guess) == 1: # Guess a letter
+    # game loop
+    while word_guesses < max_word_guesses:
+        print("\nWord:", display_word(word, guessed_letters))
+        # tells the user for a guess
+        guess = input("Enter a letter or guess the whole word: ").lower()
+
+        if len(guess) == 1:  # guess a letter
             if guess in guessed_letters:
                 print("You've guessed that letter already!")
-            else: 
+            else:
                 guessed_letters.append(guess)
                 attempts += 1
-                #count occurences of guessed letters
                 count = word.count(guess)
                 if count > 0:
-                    print("Yes, the letter", guess, "appears", count, " time (s) in the word.")
-                else: 
-                    print("No, there are no instances of the letter", guess, "in the word.")
-
-                #increment word guesses
-                word_guesses += 1
-
-
-                print("The word has", len(word), "letters.")
-
-                if all(letter in guessed_letters for letter in word): 
-                    print("You've guessed the word in", attempts, "attempts, Congratulations!")
+                    print(f"Yes, the letter {guess} appears {count} time(s) in the word.")
+                else:
+                    print(f"No, there are no instances of the letter {guess} in the word.")
+                if all(letter in guessed_letters for letter in word):
+                    print(f"\nYou've guessed the word '{word}' in {attempts} attempts! Congratulations!")
                     break
-        else: # Guessing the word
-            word_guesses += 1 
+        else:  # Guessing the word
+            word_guesses += 1
             attempts += 1
-            #counts correct letters
-            correct_letters = sum( 1 for guessed, secret in zip(guess, word) if guessed == secret)
             if guess == word:
-                print("You've guessed the word in", attempts, "attempts, Congratulations!")
+                print(f"\nYou've guessed the word '{word}' in {attempts} attempts! Congratulations!")
                 break
-            else: 
-                print("Unfortunately, that is not the word :( ")
-                if word_guesses >= 3: 
-                    print("Oh No! You used all your guesses. The word was", word)
+            else:
+                print("Unfortunately, that is not the word.")
+                if word_guesses >= max_word_guesses:
+                    print(f"\nOh no! You used all your word guesses. The word was '{word}'.")
                     break
+        
+        # Tracks the number of guesses made
+        guess_history.append(len(guessed_letters))  
+
+    # Guess plot history
+    plt.plot(range(1, len(guess_history) + 1), guess_history)
+    plt.xlabel("Attempt Number")
+    plt.ylabel("Number of Guesses")
+    plt.title("Guess History")
+    plt.grid(True)
+    plt.show()
+
+#Define main functionn 
+def main():
+    """Main function to start the game"""
+    # tells the user to choose a theme to start the game
+    theme = input("Choose a theme (animals, fruits, random): ").lower()
+    play_game(theme)
 
 if __name__ == "__main__":
-    play_game()
+    main()
+
+
+
+
+
+
+
+
+
+#Test animal theme 
+   # print("Test case: animal theme")
+    #play_game ("animals")
+
+#test fruit theme 
+   # print("\nTest: fruit theme")
+   # play_game("fruits")
+
+# 3 test random theme 
+    #print("\nTest: random theme")
+   # play_game ("random")
+    

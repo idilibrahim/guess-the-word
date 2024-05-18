@@ -22,7 +22,7 @@ Welcome to the word guessing game! This interactive Python game requires players
 
 
 ## Credits: 
-This game was created by Idil Ibrahim. Special thanks to my pair programming partner, Richard Zhou
+This game was created by Idil Ibrahim. Special thanks to my pair programming partner, Richard Zhou for catching some challenging errors along the way! 
 
 ## License 
 This project is licensed under the MIT License - see the LICENSE.txt file for details.

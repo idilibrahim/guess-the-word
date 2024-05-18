@@ -27,6 +27,7 @@ This game was created by Idil Ibrahim. Special thanks to my pair programming par
 ## License 
 This project is licensed under the MIT License - see the LICENSE.txt file for details.
 
+Enjoy playing the guessing game! Have fun :)
 
 
 
